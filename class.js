@@ -15,13 +15,13 @@ class LivingCreature {
       [this.x + 1, this.y + 1],
     ];
   }
-  chooseCell(ch) {
+  chooseCell(num1, num2, num3, num4) {
     var found = [];
     for (var i in this.directions) {
       var x = this.directions[i][0];
       var y = this.directions[i][1];
       if (x >= 0 && x < matrix[0].length && y >= 0 && y < matrix.length) {
-        if (matrix[y][x] == ch) {
+        if (matrix[y][x] == num1 || matrix[y][x] == num2 || matrix[y][x] == num3 || matrix[y][x] == num4) {
           found.push(this.directions[i]);
         }
       }
@@ -31,22 +31,26 @@ class LivingCreature {
 }
 
 class Grass extends LivingCreature {
-  mul() {
-    this.multiply++;
-    var newCell = random(this.chooseCell(0));
-    if (this.multiply >= 4 && newCell) {
-      var newGrass = new Grass(newCell[0], newCell[1], this.index);
-      grassArr.push(newGrass);
-      matrix[newCell[1]][newCell[0]] = this.index;
-      this.multiply = 0;
+    mul() {
+       this.multiply++;
+       let search = this.chooseCell(0, 0);
+       let exact = random(search);
+       if(exact && this.multiply > 1)
+       {
+          let x = exact[0];
+          let y = exact[1];
+          matrix[y][x] = 1;
+          let grass1 = new Grass(x,y)
+          grassArr.push(grass1);
+          this.multiply = 0;
+       }
     }
-  }
 }
 
 class GrassEater extends LivingCreature {
   constructor(x, y) {
     super(x, y);
-    this.energy = 8;
+    this.energy = 2;
   }
   getNewCoordinates() {
     this.directions = [
@@ -64,75 +68,97 @@ class GrassEater extends LivingCreature {
     this.getNewCoordinates();
     return super.chooseCell(ch);
   }
-  mul() {
-    let found = this.chooseCell(0);
-    let exact = random(found);
-    if (exact && this.energy >= 3) {
-      let x = exact[0];
-      let y = exact[1];
-      let newGrassEater = new GrassEater(x, y);
-      grassEaterArr.push(newGrassEater);
-      this.energy = 10;
-    }
-  }
-  eat() {
-    let found = this.chooseCell(0);
-    let exact = random(found);
-    console.log(found);
-    if (exact) {
-      this.energy += 2;
-      let x = exact[0];
-      let y = exact[1];
-      for (let i = 0; i < grassArr.length; i++) {
-        if (grassArr[i].x == x && grassArr[i].y == y) {
-          grassArr.splice(i, 1);
+  mul()
+     {
+        let found = this.chooseCell(0);
+        let exact = random(found);
+        if(exact && this.energy > 25)
+        {
+            let x = exact[0];
+            let y = exact[1];
+            matrix[y][x] = 2;
+            let newGrassEater = new GrassEater(x,y)
+            grassEaterArr.push(newGrassEater);
+            this.energy = 2;
         }
-      }
-      for (let i = 0; i < grassEaterArr.length; i++) {
-        if (grassEaterArr[i].x == x && grassEaterArr[i].y == y) {
-          grassEaterArr.splice(i, 1);
+    } 
+    eat(){
+        let found = this.chooseCell(1,5);
+        let exact = random(found);
+        console.log(found);
+        if(exact)
+        {
+            this.energy += 3;
+            let x = exact[0];
+            let y = exact[1];
+            for(let i = 0; i < BoosterArr.length; i++)
+            {
+                if(BoosterArr[i].x == x && BoosterArr[i].y == y)
+                {
+                    BoosterArr[i].isPickedUp();
+                    BoosterArr.splice(i, 1);
+                }
+            }
+            for(let i = 0; i < grassArr.length; i++)
+            {
+                if(grassArr[i].x == x && grassArr[i].y == y)
+                {
+                    grassArr.splice(i, 1);
+                }
+            }
+            matrix[y][x] = 2;
+            matrix[this.y][this.x] = 0;
+            this.x = x;
+            this.y = y;
+            if(this.energy > 20)
+            {
+                this.mul();
+            }
         }
-      }
-      matrix[y][x] = 3;
-      matrix[this.y][this.x] = 0;
-      this.x = x;
-      this.y = y;
-      if (this.energy > 10) {
-        this.mul();
-      }
-    } else {
-      this.move();
+        else 
+        {
+            this.move();
+        }
+
+     }
+     move()
+     {
+        let found = this.chooseCell(0);
+        let exact = random(found);
+        if(exact)
+        {
+            this.energy -= 4;
+            let x = exact[0];
+            let y = exact[1];
+            matrix[y][x] = 2;
+            matrix[this.y][this.x] = 0;
+            this.x = x;
+            this.y = y;
+            if(this.energy < 0)
+            {
+                this.die();
+            }   
+        }
+        else{
+            this.energy--;
+            if(this.energy < 0)
+            {
+                this.die();
+            } 
+        }
     }
-  }
-  move() {
-    let found = this.chooseCell(0);
-    let exact = random(found);
-    if (exact) {
-      this.energy -= 5;
-      let x = exact[0];
-      let y = exact[1];
-      matrix[y][x] = 3;
-      matrix[this.y][this.x] = 0;
-      this.x = x;
-      this.y = y;
-      if (this.energy < 0) {
-        this.die();
-      }
-    } else {
-      this.energy -= 2;
-      if (this.energy < 0) {
-        this.die();
-      }
-    }
-  }
-  die() {
-    for (let i = 0; i < grassEaterArr.length; i++) {
-      if (grassEaterArr[i].x == this.x && grassEaterArr[i].y == this.y) {
-        grassEaterArr.splice(i, 1);
-      }
-    }
-    matrix[this.y][this.x] = 0;
-  }
+    die()
+    {
+        for(let i = 0; i < grassEaterArr.length; i++)
+            {
+                if(grassEaterArr[i].x == this.x && grassEaterArr[i].y == this.y)
+                {
+                    grassEaterArr.splice(i, 1);
+                    
+                }
+            }
+            matrix[this.y][this.x] = 0;
+    }    
 }
 
 class Predator extends LivingCreature {
@@ -159,7 +185,7 @@ class Predator extends LivingCreature {
   mul() {
     let found = this.chooseCell(0);
     let exact = random(found);
-    if (exact && this.energy > 5) {
+    if (exact && this.energy > 20) {
       let x = exact[0];
       let y = exact[1];
       matrix[y][x] = 3;
@@ -169,7 +195,7 @@ class Predator extends LivingCreature {
     }
   }
   eat() {
-    let found = this.chooseCell(1);
+    let found = this.chooseCell(1,2);
     let exact = random(found);
     console.log(found);
     if (exact) {
@@ -264,7 +290,7 @@ class Fire extends LivingCreature {
     }
   }
   eat() {
-    let found = this.chooseCell(1);
+    let found = this.chooseCell(1,2,3);
     let exact = random(found);
     console.log(found);
     if (exact && this.power > 20) {
@@ -299,20 +325,15 @@ class Fire extends LivingCreature {
     }
   }
   move() {
-    let found = this.chooseCell(0);
+    let found = this.chooseCell(0,1,2,3);
     let exact = random(found);
     if (exact) {
-      // this.power -= 3;
       let x = exact[0];
       let y = exact[1];
       matrix[y][x] = 4;
       matrix[this.y][this.x] = 4;
       this.x = x;
       this.y = y;
-      // if(this.power < 0)
-      // {
-      //     this.die();
-      // }
     }
   }
 }
