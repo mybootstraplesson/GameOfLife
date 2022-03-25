@@ -9,10 +9,12 @@ app.use(express.static("."));
 app.get('/', function (req, res) {
     res.redirect('index.html');
 });
-server.listen(3000);
+server.listen(3000, function(){
+    console.log('connected');
+});
 
-var matrix = [
-    [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+matrix = [
+    [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
     [1, 2, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0],
     [1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
@@ -24,7 +26,7 @@ var matrix = [
     [0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 4, 0, 0, 0],
     [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1,0, 0, 1, 1, 0, 0, 4, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1,0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
     [1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,1,0, 3, 0, 0, 0, 0, 0, 0],
     [1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0],
     [1, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0],
@@ -34,15 +36,15 @@ var matrix = [
 
 io.sockets.emit('send matrix', matrix);
 
-var grassArr = [];
-var grassEaterArr = [];
-var PredatorArr = [];
-var FireArr = [];
+ grassArr = [];
+ grassEaterArr = [];
+ PredatorArr = [];
+ FireArr = [];
 
-var Grass = require("./Grass");
-var GrassEater = require("./GrassEater");
-var Predator = require("./Predator");
-var Fire = require("./Fire");
+ Grass = require("./Grass");
+ GrassEater = require("./GrassEater");
+ Predator = require("./Predator");
+ Fire = require("./Fire");
 
 function createObject(matrix) {
     for (var y = 0; y < matrix.length; y++) {
@@ -63,33 +65,32 @@ function createObject(matrix) {
             } else if (matrix[y][x] == 4) {
                 var fire = new Fire(x, y);
                 FireArr.push(fire);
-
             }
         }
     }
 
     io.sockets.emit('send matrix', matrix);
+}
 
-    function Game() {
-        for (let i in grassArr) {
-            grassArr[i].mul();
-        }
-        for (let i in grassEaterArr) {
-            grassEaterArr[i].eat();
-        }
-         for (let i in PredatorArr) {
-            PredatorArr[i].eat();
-        }
-        for (let i in FireArr) {
-            FireArr[i].eat();
-        }
-
-        io.sockets.emit('send matrix', matrix);
+function Game() {
+    for (let i in grassArr) {
+        grassArr[i].mul();
+    }
+    for (let i in grassEaterArr) {
+        grassEaterArr[i].eat();
+    }
+     for (let i in PredatorArr) {
+        PredatorArr[i].eat();
+    }
+    for (let i in FireArr) {
+        FireArr[i].eat();
     }
 
-    setInterval(Game, 1000);
-
-    io.on('connection', function (socket) {
-        createObject(matrix);
-    })
+    io.sockets.emit('send matrix', matrix);
 }
+
+setInterval(Game, 1000);
+
+io.on('connection', function (socket) {
+     createObject(matrix);
+})
