@@ -89,8 +89,100 @@ function Game() {
     io.sockets.emit('send matrix', matrix);
 }
 
-setInterval(Game, 1000);
+function addGrass() {
+    for (i = 0; i < 100; i++) {
+      var x = Math.floor(Math.random() * matrix[0].length);
+      var y = Math.floor(Math.random() * matrix.length);
+      console.log(x, y);
+      if (matrix[y][x] == 0) {
+        let grass = new Grass(x, y);
+        grassArr.push(grass);
+        matrix[y][x] = 1;
+      }
+    }
+  }
+  
+  function addGrassEater() {
+    for (i = 0; i < 10; i++) {
+      var x = Math.floor(Math.random() * matrix[0].length);
+      var y = Math.floor(Math.random() * matrix.length);
+      console.log(x, y);
+      if (matrix[y][x] == 0) {
+        let newGrassEater = new GrassEater(x, y);
+        grassEaterArr.push(newGrassEater);
+        matrix[y][x] = 2;
+      }
+    }
+  }
+  
+function flood() {
+    for (var y = 0; y < matrix[0].length; y++) {
+      matrix[0][y] = 5;
+    }
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[1][x] = 5;
+      } }, 100);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[2][x] = 5;
+    } }, 200);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[3][x] = 5;
+    } }, 300);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[4][x] = 5;
+    } }, 400);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[5][x] = 5;
+    } }, 500);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[6][x] = 5;
+    } }, 600);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[7][x] = 5;
+    } }, 700);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[8][x] = 5;
+    } }, 800);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[9][x] = 5;
+    } }, 900);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[10][x] = 5;
+    } }, 1000);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[11][x] = 5;
+    } }, 1100);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[12][x] = 5;
+    } }, 1200);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[13][x] = 5;
+    } }, 1300);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[14][x] = 5;
+    } }, 1400);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[15][x] = 5;
+    } }, 1500);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[16][x] = 5;
+    } }, 1600);
+    setTimeout(() => {  for (var x = 0; x < matrix[0].length; x++) {
+        matrix[17][x] = 5;
+    } }, 1700);
+    setTimeout(() => {  for (var y = 0; y < matrix.length; y++) {
+        for (var x = 0; x < matrix[y].length; x++) { 
+             matrix[y][x] = 0;
+        }
+    } }, 2500)
 
-io.on('connection', function (socket) {
-     createObject(matrix);
-})
+}
+  
+setInterval(Game, 600);
+  
+io.on("connection", function (socket) {
+    createObject(matrix);
+    socket.on("AddGrass", addGrass);
+    socket.on("AddGrassEater", addGrassEater);
+    socket.on("Flood", flood);
+});
