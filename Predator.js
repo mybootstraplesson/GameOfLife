@@ -3,7 +3,7 @@ let LivingCreature = require('./LivingCreature');
 module.exports = class Predator extends LivingCreature {
   constructor(x, y) {
     super(x, y);
-    this.energy = 4;
+    this.energy = 7;
   }
   getNewCoordinates() {
     this.directions = [
@@ -24,20 +24,55 @@ module.exports = class Predator extends LivingCreature {
   mul() {
     let chooseCells = this.chooseCell(0);
     var newCell = chooseCells[Math.floor(Math.random() * chooseCells.length)];
-    if (newCell && this.energy > 20) {
+    if (newCell && weath == "winter" && this.energy > 30) {
       let x = newCell[0];
       let y = newCell[1];
       matrix[y][x] = 3;
       let newPredator = new Predator(x, y);
       PredatorArr.push(newPredator);
-      this.energy = 2;
+      this.energy = 5;
+    }
+    else if (newCell && weath == "spring" && this.energy > 20) {
+      let x = newCell[0];
+      let y = newCell[1];
+      matrix[y][x] = 3;
+      let newPredator = new Predator(x, y);
+      PredatorArr.push(newPredator);
+      this.energy = 7;
+    }
+    else if (newCell && weath == "summer" && this.energy > 15) {
+      let x = newCell[0];
+      let y = newCell[1];
+      matrix[y][x] = 3;
+      let newPredator = new Predator(x, y);
+      PredatorArr.push(newPredator);
+      this.energy = 10;
+    }
+    else if (newCell && weath == "autumn" && this.energy > 25) {
+      let x = newCell[0];
+      let y = newCell[1];
+      matrix[y][x] = 3;
+      let newPredator = new Predator(x, y);
+      PredatorArr.push(newPredator);
+      this.energy = 6;
     }
   }
   eat() {
     let chooseCells = this.chooseCell(1,2);
     var newCell = chooseCells[Math.floor(Math.random() * chooseCells.length)];
     if (newCell) {
-      this.energy += 2;
+      if(weath == "winter"){
+        this.energy += 2;
+      }
+      else if(weath == "spring"){
+        this.energy += 4;
+      }
+      else if(weath == "summer"){
+        this.energy += 5;
+      }
+      else if(weath == "autumn"){
+        this.energy += 3;
+      }
       let x = newCell[0];
       let y = newCell[1];
       for (let i = 0; i < grassArr.length; i++) {
@@ -54,7 +89,7 @@ module.exports = class Predator extends LivingCreature {
       matrix[this.y][this.x] = 0;
       this.x = x;
       this.y = y;
-      if (this.energy > 25) {
+      if (this.energy > 15) {
         this.mul();
       }
     } else {
@@ -65,7 +100,18 @@ module.exports = class Predator extends LivingCreature {
     let chooseCells = this.chooseCell(0);
     var newCell = chooseCells[Math.floor(Math.random() * chooseCells.length)];
     if (newCell) {
-      this.energy -= 5;
+      if(weath == "winter"){
+        this.energy -= 8;
+      }
+      else if(weath == "spring"){
+        this.energy -= 6;
+      }
+      else if(weath == "summer"){
+        this.energy -= 5;
+      }
+      else if(weath == "autumn"){
+        this.energy -= 7;
+      }
       let x = newCell[0];
       let y = newCell[1];
       matrix[y][x] = 3;

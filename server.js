@@ -295,3 +295,15 @@ io.on("connection", function (socket) {
   socket.on("Autumn", autumn);
   socket.on("Winter", winter);
 });
+
+var statistics = {};
+
+setInterval(function() {
+    statistics.grass = grassArr.length;
+    statistics.grassEater = grassEaterArr.length;
+    statistics.predator = PredatorArr.length;
+    statistics.fire = FireArr.length;
+    fs.writeFile("statistics.json", JSON.stringify(statistics), function(){
+        console.log("send")
+    })
+},5000)

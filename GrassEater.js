@@ -90,9 +90,9 @@ module.exports = class GrassEater extends LivingCreature {
     var newCell = chooseCells[Math.floor(Math.random() * chooseCells.length)];
     if (newCell) {
       if (weath == "spring") {
-        this.energy -= 4;
+        this.energy -= 3;
       } else if (weath == "summer") {
-        this.energy -= 5;
+        this.energy -= 4;
       } else if (weath == "autumn") {
         this.energy -= 6;
       } else if (weath == "winter") {
