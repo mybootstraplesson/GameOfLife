@@ -31,7 +31,7 @@ module.exports = class GrassEater extends LivingCreature {
       let newGrassEater = new GrassEater(x, y);
       grassEaterArr.push(newGrassEater);
       this.energy = 5;
-    } else if (newCell && weath == "summer" && this.energy > 20) {
+    } else if (newCell && weath == "summer" && this.energy > 22) {
       let x = newCell[0];
       let y = newCell[1];
       matrix[y][x] = 2;
@@ -59,9 +59,9 @@ module.exports = class GrassEater extends LivingCreature {
     var newCell = chooseCells[Math.floor(Math.random() * chooseCells.length)];
     if (newCell) {
       if (weath == "spring") {
-        this.energy += 5;
+        this.energy += 4;
       } else if (weath == "summer") {
-        this.energy += 7;
+        this.energy += 5;
       } else if (weath == "autumn") {
         this.energy += 3;
       } else if (weath == "winter") {
@@ -92,7 +92,7 @@ module.exports = class GrassEater extends LivingCreature {
       if (weath == "spring") {
         this.energy -= 3;
       } else if (weath == "summer") {
-        this.energy -= 4;
+        this.energy -= 5;
       } else if (weath == "autumn") {
         this.energy -= 6;
       } else if (weath == "winter") {

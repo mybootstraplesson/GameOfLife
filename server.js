@@ -306,4 +306,4 @@ setInterval(function() {
     fs.writeFile("statistics.json", JSON.stringify(statistics), function(){
         console.log("send")
     })
-},5000)
+},6000)

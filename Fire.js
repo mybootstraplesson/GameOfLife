@@ -42,13 +42,13 @@ module.exports = class Fire extends LivingCreature {
         let newFire = new Fire(x, y);
         FireArr.push(newFire);
         if(weath == "spring"){
-          this.power == 11;
+          this.power == 10;
         }
         else if(weath == "summer"){
-          this.power == 13;
+          this.power == 12;
         }
         else if(weath == "autumn"){
-          this.power == 10;
+          this.power == 8;
         }
       }
     }
@@ -137,15 +137,18 @@ module.exports = class Fire extends LivingCreature {
     }
   }
   move() {
-    let chooseCells = this.chooseCell(0, 1, 2, 3);
-    var newCell = chooseCells[Math.floor(Math.random() * chooseCells.length)];
-    if (newCell) {
-      let x = newCell[0];
-      let y = newCell[1];
-      matrix[y][x] = 4;
-      matrix[this.y][this.x] = 4;
-      this.x = x;
-      this.y = y;
+    if(weath != "winter"){
+      let chooseCells = this.chooseCell(0, 1, 2, 3);
+      var newCell = chooseCells[Math.floor(Math.random() * chooseCells.length)];
+      if (newCell) {
+        let x = newCell[0];
+        let y = newCell[1];
+        matrix[y][x] = 4;
+        matrix[this.y][this.x] = 4;
+        this.x = x;
+        this.y = y;
+      }  
     }
+
   }
 }

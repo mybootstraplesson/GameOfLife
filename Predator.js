@@ -40,7 +40,7 @@ module.exports = class Predator extends LivingCreature {
       PredatorArr.push(newPredator);
       this.energy = 7;
     }
-    else if (newCell && weath == "summer" && this.energy > 15) {
+    else if (newCell && weath == "summer" && this.energy > 18) {
       let x = newCell[0];
       let y = newCell[1];
       matrix[y][x] = 3;
